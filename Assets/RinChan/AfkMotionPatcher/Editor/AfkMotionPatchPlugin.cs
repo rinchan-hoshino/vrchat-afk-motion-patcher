@@ -32,12 +32,12 @@ namespace RinChan.AfkMotionPatcher
         protected override void Execute(nadena.dev.ndmf.BuildContext context)
         {
             var avatarRoot = context.AvatarRootObject;
-            if (!AfkMotionPatchAuthoring.TryGetActivePatch(avatarRoot, out var patch)) return;
+            if (!AfkMotionPatchEditorUtil.TryGetActivePatch(avatarRoot, out var patch)) return;
             if (!patch.patchActionLayer) return;
 
-            if (!AfkMotionPatchAuthoring.GeneratedClipsReady(patch))
+            if (!AfkMotionPatchEditorUtil.RequiredClipsPresent(patch))
             {
-                var message = $"[AfkMotionPatch] Generated AFK clips are missing for avatar={avatarRoot.name}, patch={AfkMotionPatchAuthoring.GetPath(patch.transform)}. Reopen/edit the patch component in Unity so authoring can materialize clips before build/preview.";
+                var message = $"[AfkMotionPatch] Required target/replacement AFK clips are missing for avatar={avatarRoot.name}, patch={AfkMotionPatchEditorUtil.GetPath(patch.transform)}.";
                 if (patch.failOnMissingSource) Debug.LogError(message, patch);
                 else Debug.LogWarning(message, patch);
                 return;
@@ -50,12 +50,16 @@ namespace RinChan.AfkMotionPatcher
                 return;
             }
 
-            var introMotion = controllerContext.Clone(patch.generatedIntroClip);
-            var loopMotion = controllerContext.Clone(patch.generatedLoopClip);
-            var outroMotion = controllerContext.Clone(patch.generatedOutroClip);
+            var introClip = AfkMotionPatchEditorUtil.CreateAdaptedClipClone(patch.replacementIntroSource, avatarRoot, patch, "Intro");
+            var loopClip = AfkMotionPatchEditorUtil.CreateAdaptedClipClone(patch.replacementLoopSource, avatarRoot, patch, "Loop");
+            var outroClip = AfkMotionPatchEditorUtil.CreateAdaptedClipClone(patch.replacementOutroSource, avatarRoot, patch, "Outro");
+
+            var introMotion = controllerContext.Clone(introClip);
+            var loopMotion = controllerContext.Clone(loopClip);
+            var outroMotion = controllerContext.Clone(outroClip);
             if (introMotion == null || loopMotion == null || outroMotion == null)
             {
-                Debug.LogError($"[AfkMotionPatch] Failed to virtualize generated AFK clips for avatar={avatarRoot.name}.", patch);
+                Debug.LogError($"[AfkMotionPatch] Failed to virtualize adapted AFK clips for avatar={avatarRoot.name}.", patch);
                 return;
             }
 
@@ -86,13 +90,13 @@ namespace RinChan.AfkMotionPatcher
 
             if (replaced == 0)
             {
-                var message = $"[AfkMotionPatch] No target AFK motions matched in Action controller for avatar={avatarRoot.name}, patch={AfkMotionPatchAuthoring.GetPath(patch.transform)}.";
+                var message = $"[AfkMotionPatch] No target AFK motions matched in Action controller for avatar={avatarRoot.name}, patch={AfkMotionPatchEditorUtil.GetPath(patch.transform)}.";
                 if (patch.failOnMissingSource) Debug.LogError(message, patch);
                 else Debug.LogWarning(message, patch);
                 return;
             }
 
-            Debug.Log($"[AfkMotionPatch] Patched Action AFK motions via NDMF avatar={avatarRoot.name}, patch={AfkMotionPatchAuthoring.GetPath(patch.transform)}, replaced={replaced}", patch);
+            Debug.Log($"[AfkMotionPatch] Patched Action AFK motions via NDMF avatar={avatarRoot.name}, patch={AfkMotionPatchEditorUtil.GetPath(patch.transform)}, replaced={replaced}", patch);
         }
 
         private static int PatchStateMotion(VirtualState state, AfkMotionPatch patch, VirtualMotion introMotion, VirtualMotion loopMotion, VirtualMotion outroMotion)
@@ -107,9 +111,9 @@ namespace RinChan.AfkMotionPatcher
         {
             if (motion == null) return null;
             var motionName = motion.Name;
-            if (AfkMotionPatchAuthoring.MatchesTargetClipName(motionName, patch.targetIntroMotion)) return introMotion;
-            if (AfkMotionPatchAuthoring.MatchesTargetClipName(motionName, patch.targetLoopMotion)) return loopMotion;
-            if (AfkMotionPatchAuthoring.MatchesTargetClipName(motionName, patch.targetOutroMotion)) return outroMotion;
+            if (AfkMotionPatchEditorUtil.MatchesTargetClipName(motionName, patch.targetIntroMotion)) return introMotion;
+            if (AfkMotionPatchEditorUtil.MatchesTargetClipName(motionName, patch.targetLoopMotion)) return loopMotion;
+            if (AfkMotionPatchEditorUtil.MatchesTargetClipName(motionName, patch.targetOutroMotion)) return outroMotion;
             return null;
         }
     }

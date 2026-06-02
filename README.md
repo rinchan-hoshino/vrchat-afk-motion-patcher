@@ -8,7 +8,7 @@ This package is the **core plugin only**. It does not contain Chocolat/Plum-spec
 
 - Lets an adapter component name three target Action motions to replace: intro, loop, outro.
 - Lets an adapter component provide three replacement source clips.
-- Optionally remaps renderer paths and blendShape names while materializing generated clips.
+- Optionally remaps renderer paths and blendShape names while creating transient build-time replacement clips.
 - During NDMF processing, patches the virtualized Action controller via `AnimatorServicesContext`.
 - Leaves the avatar descriptor and source controller assets untouched.
 
@@ -38,13 +38,7 @@ Then add `AfkMotionPatch` to a GameObject under the avatar root, or use an adapt
 
 ## Generated assets
 
-Generated, retargeted clips are written under:
-
-```text
-Assets/RinChan/AfkMotionPatcher/Baked/
-```
-
-They are derived from the user's local clips and should not be redistributed.
+The core plugin does not write persistent remapped clips into the project. Replacement clips are created transiently inside the NDMF preprocess pass and are emitted only as part of NDMF's normal processed-avatar output.
 
 ## Validation
 

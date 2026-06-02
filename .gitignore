@@ -25,9 +25,6 @@
 .DS_Store
 Thumbs.db
 
-# Plugin-generated clips derived from user-owned animation assets
-Assets/RinChan/AfkMotionPatcher/Baked/
-
 # NDMF/VRCFury temporary build products
 Packages/nadena.dev.ndmf/__Generated/
 Packages/com.vrcfury.temp/Builds/

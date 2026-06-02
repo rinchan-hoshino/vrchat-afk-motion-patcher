@@ -40,24 +40,5 @@ namespace RinChan.AfkMotionPatcher
         [Header("Build")]
         public bool patchActionLayer = true;
         public bool failOnMissingSource = true;
-
-        [HideInInspector] public AnimationClip generatedIntroClip;
-        [HideInInspector] public AnimationClip generatedLoopClip;
-        [HideInInspector] public AnimationClip generatedOutroClip;
-        [HideInInspector] public string generatedSignature;
-
-#if UNITY_EDITOR
-        private void OnEnable()
-        {
-            if (Application.isPlaying) return;
-            AfkMotionPatchAuthoring.Schedule(this);
-        }
-
-        private void OnValidate()
-        {
-            if (Application.isPlaying) return;
-            AfkMotionPatchAuthoring.Schedule(this);
-        }
-#endif
     }
 }

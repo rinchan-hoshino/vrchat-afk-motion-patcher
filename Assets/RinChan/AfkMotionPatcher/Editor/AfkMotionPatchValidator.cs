@@ -37,13 +37,12 @@ namespace RinChan.AfkMotionPatcher.Editor
 
         private static void RunValidation(GameObject avatarRoot)
         {
-            AfkMotionPatchAuthoring.SyncAvatar(avatarRoot);
             var patches = avatarRoot.GetComponentsInChildren<AfkMotionPatch>(true);
 
             Debug.Log($"[AfkMotionPatchValidate] avatar={avatarRoot.name} active={avatarRoot.activeInHierarchy} patches={patches.Length}", avatarRoot);
             foreach (var patch in patches)
             {
-                Debug.Log($"[AfkMotionPatchValidate] patch={AfkMotionPatchAuthoring.GetPath(patch.transform)} enabled={patch.enabled} patchAction={patch.patchActionLayer}", patch);
+                Debug.Log($"[AfkMotionPatchValidate] patch={AfkMotionPatchEditorUtil.GetPath(patch.transform)} enabled={patch.enabled} patchAction={patch.patchActionLayer}", patch);
             }
 
             if (patches.Length == 0)
@@ -77,10 +76,7 @@ namespace RinChan.AfkMotionPatcher.Editor
                             var stateName = childState.state.name ?? string.Empty;
                             if ((stateName + " " + motionName).IndexOf("afk", StringComparison.OrdinalIgnoreCase) < 0) continue;
                             Debug.Log($"[AfkMotionPatchValidate] layer[{i}] afkState={stateName} motion={motionName}", actionController);
-                            if (patches.Any(p => p.generatedIntroClip == childState.state.motion || p.generatedLoopClip == childState.state.motion || p.generatedOutroClip == childState.state.motion))
-                            {
-                                replacementHits++;
-                            }
+                            if (motionName.StartsWith("AfkMotionPatch_", StringComparison.Ordinal)) replacementHits++;
                         }
                     }
                 }
