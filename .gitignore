@@ -1,0 +1,33 @@
+# Unity generated/cache folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# IDE/editor
+.vs/
+.idea/
+*.csproj
+*.sln
+*.user
+*.pidb
+*.booproj
+*.svd
+*.tmp
+*.bak
+*.orig
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Plugin-generated clips derived from user-owned animation assets
+Assets/RinChan/AfkMotionPatcher/Baked/
+
+# NDMF/VRCFury temporary build products
+Packages/nadena.dev.ndmf/__Generated/
+Packages/com.vrcfury.temp/Builds/
